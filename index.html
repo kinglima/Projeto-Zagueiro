@@ -362,7 +362,7 @@ function updateHeader(){
   if(currentPage==='hoje'){
     const tk=getTodayKey();
     const checks=S.checks[tk]||{};
-    const allExs=[...(day?.exs||[]),...(FUNC[DOW_MAP[dow]]||[]).map((_,i)=>({id:'f'+i})),...DAILY_HABITS.map(h=>({id:'h_'+h.id}))];
+    const allExs=[...(day&&day.exs||[]),...(FUNC[DOW_MAP[dow]]||[]).map((_,i)=>({id:'f'+i})),...DAILY_HABITS.map(h=>({id:'h_'+h.id}))];
     const done=allExs.filter(e=>checks[e.id]).length;
     const pct=allExs.length>0?Math.round(done/allExs.length*100):0;
     document.getElementById('hdr-pct').textContent=pct+'%';
@@ -802,7 +802,7 @@ function setStatus(s,silent){
   if(adv){const msgs={ok:'✅ Sem dor. Treine normalmente.',warn:'⚠️ Dor leve. Reduz impacto, gelo pós-treino.',pain:'🔴 Com dor. Não treina o músculo. Aplica R.I.C.E.'};adv.textContent=msgs[s]||'';}
 }
 function setPain(area,val){if(!S.pain)S.pain={};S.pain[area]=val;save();renderSaude(document.getElementById('content'));}
-function logFisio(status){if(!S.fisioLog)S.fisioLog=[];const area=document.getElementById('fisio-area')?.value||'tornozelo';S.fisioLog.unshift({id:Date.now(),date:new Date().toISOString().split('T')[0],status,area});save();renderFisioLog();toast(status==='feito'?'✅':'❌',status==='feito'?'Fisio registrada!','Sessão pulada.');}
+function logFisio(status){if(!S.fisioLog)S.fisioLog=[];const area=(document.getElementById('fisio-area')&&document.getElementById('fisio-area').value)||'tornozelo';S.fisioLog.unshift({id:Date.now(),date:new Date().toISOString().split('T')[0],status,area});save();renderFisioLog();toast(status==='feito'?'✅':'❌',status==='feito'?'Fisio registrada!':'Sessão pulada.');}
 function renderFisioLog(){
   const el=document.getElementById('fisio-log-list');if(!el)return;
   if(!S.fisioLog||!S.fisioLog.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhum registro ainda.</div>';return;}
@@ -816,10 +816,10 @@ function renderFisioLog(){
   }).join('');
 }
 function saveBio(){
-  const fat=parseFloat(document.getElementById('bio-fat')?.value);
-  const muscle=parseFloat(document.getElementById('bio-muscle')?.value);
+  const fat=parseFloat((document.getElementById('bio-fat')&&document.getElementById('bio-fat').value));
+  const muscle=parseFloat((document.getElementById('bio-muscle')&&document.getElementById('bio-muscle').value));
   if(!fat&&!muscle){toast('❌','Preencha os dados.');return;}
-  S.bio={fat,muscle,visceral:parseInt(document.getElementById('bio-visceral')?.value)||null,weight:parseFloat(document.getElementById('bio-weight')?.value)||null,date:new Date().toISOString().split('T')[0]};
+  S.bio={fat,muscle,visceral:parseInt((document.getElementById('bio-visceral')&&document.getElementById('bio-visceral').value))||null,weight:parseFloat((document.getElementById('bio-weight')&&document.getElementById('bio-weight').value))||null,date:new Date().toISOString().split('T')[0]};
   save();render();toast('📏','Bioimpedância salva!');
 }
 
@@ -968,7 +968,7 @@ function renderMais(c){
 
 function saveBoxe(){
   if(!S.boxeLog)S.boxeLog=[];
-  const b={id:Date.now(),date:document.getElementById('bx-date')?.value||new Date().toISOString().split('T')[0],week:document.getElementById('bx-week')?.value||'Sem 1',time:parseInt(document.getElementById('bx-time')?.value)||15,rating:parseFloat(document.getElementById('bx-rating')?.value)||6,notes:document.getElementById('bx-notes')?.value||''};
+  const b={id:Date.now(),date:(document.getElementById('bx-date')&&document.getElementById('bx-date').value)||new Date().toISOString().split('T')[0],week:(document.getElementById('bx-week')&&document.getElementById('bx-week').value)||'Sem 1',time:parseInt((document.getElementById('bx-time')&&document.getElementById('bx-time').value))||15,rating:parseFloat((document.getElementById('bx-rating')&&document.getElementById('bx-rating').value))||6,notes:(document.getElementById('bx-notes')&&document.getElementById('bx-notes').value)||''};
   S.boxeLog.unshift(b);save();render();toast('🥊','Sessão registrada!');
 }
 function advCardio(){S.cardioPhase=Math.min((S.cardioPhase||0)+1,3);save();render();toast('🏃','Fase concluída!');}
